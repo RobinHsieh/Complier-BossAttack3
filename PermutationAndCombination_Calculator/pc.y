@@ -15,7 +15,7 @@ int combination(int m, int n);
 
 %}
 
-%token NUMBER PERMUTA COMBINA
+%token NUMBER PERMUTATION COMBINATION
 
 %%
 
@@ -35,14 +35,14 @@ term   : term '+' factor {
        }
        ;
 
-factor : PERMUTA NUMBER NUMBER {
+factor : PERMUTATION NUMBER NUMBER {
        if ($2 < $3 || $2 > 12 || $3 > 12) {
            semanticError();
            return 0;
        }
        $$ = permutation($2, $3);
        }
-       | COMBINA NUMBER NUMBER {
+       | COMBINATION NUMBER NUMBER {
        if ($2 < $3 || $2 > 12 || $3 > 12) {
            semanticError();
            return 0;
