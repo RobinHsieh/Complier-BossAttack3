@@ -5,34 +5,33 @@
 
 %}
 
-NUMBER  [0-9]+
-PERMUTA [Pp]
-COMBINA [Cc]
+NUMBER      [0-9]+
+PERMUTATION [Pp]
+COMBINATION [Cc]
 
 %%
 
-{PERMUTA} {
-           return(PERMUTA);
+{PERMUTATION} {
+               return(PERMUTA);
 }
 
-{COMBINA} {
-           return(COMBINA);
+{COMBINATION} {
+               return(COMBINA);
 }
 
-"+"       {
-           return(yytext[0]);
+"+"           {
+               return(yytext[0]);
 }
 
-"-"       {
-           return(yytext[0]);
+"-"           {
+               return(yytext[0]);
 }
 
-{NUMBER}  {
-           yylval = atoi(yytext);
-           //printf("accept<%d>\n", yylval);
-           return(NUMBER);
+{NUMBER}      {
+               yylval = atoi(yytext);
+               return(NUMBER);
 }
 
-[ ]       {;}
+[ ]           {;}
 
 %%
