@@ -1,6 +1,7 @@
 %option noyywrap
 %{
 
+#include "constructAST.h"
 #include "pc.tab.h"
 
 %}
@@ -12,11 +13,11 @@ COMBINATION [Cc]
 %%
 
 {PERMUTATION} {
-               return(PERMUTA);
+               return(PERMUTATION);
 }
 
 {COMBINATION} {
-               return(COMBINA);
+               return(COMBINATION);
 }
 
 "+"           {
@@ -28,7 +29,7 @@ COMBINATION [Cc]
 }
 
 {NUMBER}      {
-               yylval = atoi(yytext);
+               yylval.value = atoi(yytext);
                return(NUMBER);
 }
 

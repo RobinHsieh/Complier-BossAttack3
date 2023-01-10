@@ -1,53 +1,65 @@
 %{
 
+#include "constructAST.h" // shoud be placed before include "pc.tab.h", why?
 #include "pc.tab.h"
 #include <stdio.h>
 
-int answer;
+
+NodeAST* root;
 int valid = 1;
 
 int yylex();
 void semanticError();
 void yyerror (const char *message);
-int factorial(int count);
-int permutation(int m, int n);
-int combination(int m, int n);
 
 %}
 
-%token NUMBER PERMUTATION COMBINATION
+%union{
+
+NodeAST* nodeASTptr;
+int value;
+
+}
+
+%token<value> NUMBER
+%token PERMUTATION COMBINATION
+%type<nodeASTptr> start term factor number
 
 %%
 
 start  : term {
-       answer = $1;
+       root = $1;
        }
        ;
 
 term   : term '+' factor {
-       $$ = $1 + $3;
+       // $$ = $1 + $3;
+       $$ = addNode(NODE_ADDITION, 0, $1, $3);
        }
        | term '-' factor {
-       $$ = $1 - $3;
+       // $$ = $1 - $3;
+       $$ = addNode(NODE_SUBTRACTION, 0, $1, $3);
        }
        | factor {
        $$ = $1;
        }
        ;
 
-factor : PERMUTATION NUMBER NUMBER {
-       if ($2 < $3 || $2 > 12 || $3 > 12) {
+factor : PERMUTATION number number {
+       if ($2->value < $3->value || $2->value > 12 || $3->value > 12) {
            semanticError();
            return 0;
        }
-       $$ = permutation($2, $3);
+       // $$ = permutation($2, $3);
+       $$ = addNode(NODE_PERMUTATION, 0, $2, $3);
        }
-       | COMBINATION NUMBER NUMBER {
-       if ($2 < $3 || $2 > 12 || $3 > 12) {
+       | COMBINATION number number {
+       if ($2->value < $3->value || $2->value > 12 || $3->value > 12) {
            semanticError();
            return 0;
        }
-       $$ = combination($2, $3);
+       // $$ = combination($2, $3);
+       $$ = addNode(NODE_COMBINATION, 0, $2, $3);
        }
        | number {
        $$ = $1;
@@ -55,7 +67,7 @@ factor : PERMUTATION NUMBER NUMBER {
        ;
 
 number : NUMBER {
-       $$ = $1;
+       $$ = addNode(NODE_VALUE, $1, NULL, NULL);
        }
        ;
 
@@ -70,29 +82,11 @@ void yyerror(const char* message) {
     printf("%s", "Wrong Formula");
 }
 
-int factorial(int max) {
-    int total = 1;
-    if (max != 0) {
-        int count;
-        for (count = 1; count <= max; count++) {
-            total *= count;
-        }
-    }
-    return total;
-}
-
-int permutation(int m, int n) {
-    return factorial(m) / factorial(m - n);
-}
-
-int combination(int m, int n) {
-    return permutation(m, n) / factorial(n);
-}
-
 int main(int argc, char *argv[]) {
     yyparse();
     if (valid) {
-        printf("%d", answer);
+        int interpretedAnswer = interpretAST(root);
+        printf("%d", interpretedAnswer);
     }
     return 0;
 }
