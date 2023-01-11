@@ -33,11 +33,9 @@ start  : term {
        ;
 
 term   : term '+' factor {
-       // $$ = $1 + $3;
        $$ = addNode(NODE_ADDITION, 0, $1, $3);
        }
        | term '-' factor {
-       // $$ = $1 - $3;
        $$ = addNode(NODE_SUBTRACTION, 0, $1, $3);
        }
        | factor {
@@ -50,7 +48,6 @@ factor : PERMUTATION number number {
            semanticError();
            return 0;
        }
-       // $$ = permutation($2, $3);
        $$ = addNode(NODE_PERMUTATION, 0, $2, $3);
        }
        | COMBINATION number number {
@@ -58,7 +55,6 @@ factor : PERMUTATION number number {
            semanticError();
            return 0;
        }
-       // $$ = combination($2, $3);
        $$ = addNode(NODE_COMBINATION, 0, $2, $3);
        }
        | number {
